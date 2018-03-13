@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-03-13T16:50:03+08:00</updated><id>http://localhost:4000/</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">基于 GitLab 配置 CI</title><link href="http://localhost:4000/2018/03/01/%E5%9F%BA%E4%BA%8EGitLab%E7%9A%84CI%E9%83%A8%E7%BD%B2.html" rel="alternate" type="text/html" title="基于 GitLab 配置 CI" /><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><id>http://localhost:4000/2018/03/01/%E5%9F%BA%E4%BA%8EGitLab%E7%9A%84CI%E9%83%A8%E7%BD%B2</id><content type="html" xml:base="http://localhost:4000/2018/03/01/%E5%9F%BA%E4%BA%8EGitLab%E7%9A%84CI%E9%83%A8%E7%BD%B2.html">&lt;h1 id=&quot;gitlab-的安装配置-centos7-&quot;&gt;gitlab 的安装配置（ centos7 ）&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;安装依赖库，开放 ssh，http 端口&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo yum install curl policycoreutils openssh-server openssh-clients
+$ sudo systemctl enable sshd
+$ sudo systemctl start sshd
+$ sudo yum install postfix
+$ sudo systemctl enable postfix
+$ sudo systemctl start postfix
+$ sudo firewall-cmd --permanent --add-service=http
+$ sudo systemctl reload firewalld
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;下载 rpm 包安装&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -LJO https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-10.5.2-ce.0.el7.x86_64.rpm
+rpm -ivh gitlab-ce-10.5.2-ce.0.el7.x86_64.rpm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;启动 gitlab&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo gitlab-ctl reconfigure # 根据配置文件/etc/gitlab/gitlab.rb启动服务
+# 常见的一些命令
+sudo gitlab-ctl status
+sudo gitlab-ctl start
+sudo gitlab-ctl stop
+sudo gitlab-ctl restart
+sudo gitlab-ctl tail  # 查看日志
+sudo vim /etc/gitlab/gitlab.rb  # 修改默认配置
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;浏览器访问&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;虚拟机上安装 gitlab，ip 为 192.168.99.13，直接在浏览器输入 ip 即可；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;首次登陆，账号密码为 root 和 5iveL!fe，成功后强制修改密码；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;新增用户，配置 ssh-key 连接，创建项目…&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;修改项目路径( domain 更改为 ip )&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;新建项目后，发现项目路径名，比如 http://gitlab.example.com:pggsnap/gitlab-cicd-demo.git 为域名，这样的话每个客户端都需要在本机上配置 hosts 才能访问，或者在公司内网 dns 配置。通过修改 domain 为 ip 可以方便客户端访问。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;vim /etc/gitlab/gitlab.rb，修改 external_url；之后 sudo gitlab-ctl reconfigure。
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# external_url 'http://gitlab.example.com'
+external_url 'http://192.168.99.13'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;查看 /opt/gitlab/embedded/service/gitlab-rails/config/gitlab.yml 中 host 的值是否已变更为 ip 地址；如果没有，手动修改后重启 gitlab。
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;production: &amp;amp;base
+#
+# 1. GitLab app settings
+# ==========================
+
+## GitLab settings
+gitlab:
+  ## Web server settings (note: host is the FQDN, do not include http://)
+  host: 192.168.99.13
+  port: 80
+  https: false
+
+  # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+  # (you'd obviously need to replace ssh.host_example.com with your own host).
+  # Otherwise, ssh host will be set to the `host:` value above
+  ssh_host:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;gitlab-ci-的安装配置&quot;&gt;gitlab CI 的安装配置&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;安装 GitLab-Runner&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/pggsnap/pggsnap.github.io/blob/master/blog_img/gitlab-runner.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如上图，GitLab Runner section 链接中指出了 runner 的安装方法，&lt;a href=&quot;https://docs.gitlab.com/runner/install/linux-repository.html&quot;&gt;https://docs.gitlab.com/runner/install/linux-repository.html&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;centos7为例，&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash
+sudo yum install gitlab-runner
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;注册 Gitlab-Runner&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/pggsnap/pggsnap.github.io/blob/master/blog_img/gitlab-runner-register.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如图所示，注册了一个公用的runner。也可以为每个项目创建单独的 specific runner。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;新建了一个 spring boot 项目，在项目根目录创建 .gitlab-ci.yml 文件，配置如下:
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;build:
+  script: &quot;mvn clean package&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;之后每次上传代码到 gitlab 仓库时，会自动执行脚本，检查通过之后才会成功上传。
+&lt;img src=&quot;https://github.com/pggsnap/pggsnap.github.io/blob/master/blog_img/gitlab-ci-pipelines.jpg&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>pggsnap</name></author><category term="GitLab" /><category term="CI" /><summary type="html">gitlab 的安装配置（ centos7 ）</summary></entry></feed>
