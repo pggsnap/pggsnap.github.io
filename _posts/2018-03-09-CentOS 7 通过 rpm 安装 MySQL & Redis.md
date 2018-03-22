@@ -11,8 +11,7 @@ tags:
 
 # 安装 MySQL
 
-1. 卸载 mariadb。
-
+- 卸载 mariadb。
 ```
 [root@localhost opt]# rpm -qa | grep mariadb
 mariadb-libs-5.5.52-1.el7.x86_64
@@ -20,11 +19,10 @@ mariadb-libs-5.5.52-1.el7.x86_64
 [root@localhost opt]#
 ```
 
-2. 下载 MySQL 并保存在 /opt/mysql 目录下。
-> [官网](https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.21-1.el7.x86_64.rpm-bundle.tar)
+- 下载 MySQL 并保存在 /opt/mysql 目录下。  
+ [官网链接 https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.21-1.el7.x86_64.rpm-bundle.tar](https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.21-1.el7.x86_64.rpm-bundle.tar)
 
-3. 解压安装 MySQL。
-
+- 解压安装 MySQL。
 ```
 [root@localhost opt]# cd mysql/
 [root@localhost mysql]# tar -xvf mysql-5.7.21-1.el7.x86_64.rpm-bundle.tar
@@ -69,8 +67,7 @@ Updating / installing...
    1:mysql-community-server-5.7.21-1.e################################# [100%]
 ```
 
-4. 配置 MySQL。
-
+- 配置 MySQL。
 ```
 [root@localhost mysql]# mysqld --initialize --user=mysql
 [root@localhost mysql]#
@@ -114,16 +111,14 @@ mysql> exit
 Bye
 ```
 
-5. 设置 MySQL 开机自启动。
-
+- 设置 MySQL 开机自启动。
 ```
 [root@localhost mysql]# systemctl enable mysqld
 ```
 
 # 安装 Redis
 
-1. 安装依赖 GCC, GCC-C++，具体文件见下图。
-
+- 安装依赖 GCC, GCC-C++，具体文件见下图。
 ```
 [root@localhost redis]# cd redis-lib/
 [root@localhost redis-lib]# ll
@@ -162,11 +157,10 @@ total 47640
 [root@localhost redis-lib]# g++ -v
 ```
 
-2. 下载 Redis 并保存到 /opt/redis 目录下。
-> [官网](http://download.redis.io/releases/redis-4.0.8.tar.gz)
+- 下载 Redis 并保存到 /opt/redis 目录下。  
+  [官网链接 http://download.redis.io/releases/redis-4.0.8.tar.gz](http://download.redis.io/releases/redis-4.0.8.tar.gz)
 
-3. 解压安装 Redis。
-
+- 解压安装 Redis。
 ```
 [root@localhost redis]# tar xzf redis-4.0.8.tar.gz
 [root@localhost redis]# cd redis-4.0.8
@@ -174,8 +168,7 @@ total 47640
 [root@localhost redis-4.0.8]# make install
 ```
 
-4. 配置 Redis。
-
+- 配置 Redis。
 ```
 [root@localhost redis-4.0.8]# mkdir -p /etc/redis && cp redis.conf /etc/redis
 [root@localhost redis-4.0.8]# vim /etc/redis/redis.conf
