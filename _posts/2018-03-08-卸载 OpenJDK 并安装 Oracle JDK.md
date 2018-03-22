@@ -26,9 +26,10 @@ copy-jdk-configs-2.2-5.el7_4.noarch
 
 ### 安装Oracle JDK
 
-- [官网](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)下载并保存在/opt/目录下。
+- [http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)下载并保存在/opt/目录下。
 
 - 安装
+
 ```
 [root@localhost ~]# cd /opt/
 [root@localhost opt]# ll
