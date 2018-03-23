@@ -144,7 +144,7 @@ public String hello(String name) {
 
 - 通过请求中带有的 token 以及请求路径等信息，确定访问该接口需要的权限以及用户拥有的权限进行比较，从而实现了对外部请求的认证需求。ms-auth 微服务可以实现一个接口（入参为 token 以及 api），提供给网关使用；如果认证通过，则网关转发请求；如果认证失败，则直接拒绝。  
 ms-auth 统一维护 MySQL 以及 Redis，可以在服务启动时将表 privileges 的信息加载到 Redis 中去，这样可以直接在 Redis 中获取需要的所有信息。具体流程如图所示：
-![](https://github.com/pggsnap/pggsnap.github.io/blob/master/blog_img/2018032301.jpg)
+![](/blog_img/2018032301.jpg)
 
 # 测试
 
@@ -163,6 +163,6 @@ public class HelloController {
 ![](/blog_img/2018032302.jpg)
 
 - 通过网关调用 hello 接口。
-![](/img/2018032303.jpg)
+![](/blog_img/2018032303.jpg)
 
 # 一些细节
