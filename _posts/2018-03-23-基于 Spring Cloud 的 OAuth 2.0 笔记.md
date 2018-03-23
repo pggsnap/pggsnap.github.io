@@ -165,4 +165,5 @@ public class HelloController {
 - 通过网关调用 hello 接口。
 ![](/blog_img/2018032303.jpg)
 
-# 一些细节
+
+完整代码参考： [GitHub](https://github.com/pggsnap/oauth)
