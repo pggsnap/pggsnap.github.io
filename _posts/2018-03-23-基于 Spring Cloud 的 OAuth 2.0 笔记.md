@@ -22,7 +22,7 @@ tags:
 
 本文采用的是密码模式。
 
-## 认证服务器
+### 认证服务器
 
 ```
 @Configuration
@@ -62,7 +62,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 }
 ```
 
-## 资源服务器
+### 资源服务器
 
 ```
 @Configuration
@@ -82,7 +82,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 }
 ```
 
-## Spring Security
+### Spring Security
 
 ```
 @Configuration
@@ -107,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 # 实现方案讨论
 
-## 通过 Spring Security 的注解
+### 通过 Spring Security 的注解
 
 常见的做法是在需要认证的接口上，设置相关注解，比如：
 
@@ -124,7 +124,7 @@ public String hello(String name) {
     - 该接口要么需要认证，要么不需要认证。如果内部服务调用无需认证，而外部调用需要认证的话，无法实现。  
     - 权限关系和代码耦合。如果有些接口需要变更权限或者无需认证了，需要更改代码并重新部署服务才能生效。
 
-## 通过 zuul 网关过滤功能
+### 通过 zuul 网关过滤功能
 
 如果把请求的授权认证放在网关处理，内部微服务不配置 Spring Security 等认证的话，那么就可以实现外部请求需要认证授权，而内部调用无需认证的需求了。
 
@@ -160,9 +160,9 @@ public class HelloController {
 ```
 
 - 调用 ms-auth 认证接口，获取 token。
-![](https://github.com/pggsnap/pggsnap.github.io/blob/master/blog_img/2018032302.jpg)
+![](/blog_img/2018032302.jpg)
 
 - 通过网关调用 hello 接口。
-![](https://github.com/pggsnap/pggsnap.github.io/blob/master/blog_img/2018032303.jpg)
+![](/img/2018032303.jpg)
 
 # 一些细节
