@@ -192,7 +192,9 @@ string
 
 
 - access_token 以及 refresh_token 的刷新
-access_token 过期，refresh_token 未过期，调用刷新 token 接口，可以重新获取 access_token；如果都过期，需要通过账户密码验证重新获取 token。
+
+access_token 过期，refresh_token 未过期，调用刷新 token 接口，可以重新获取 access_token；
+如果都过期，需要通过账户密码验证重新获取 token。
 
     - 获取 token
 
