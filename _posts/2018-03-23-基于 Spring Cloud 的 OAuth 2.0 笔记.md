@@ -165,5 +165,48 @@ public class HelloController {
 - 通过网关调用 hello 接口。
 ![](/blog_img/2018032303.jpg)
 
+# 一些细节
+
+- token 在 Redis 中的存储
+> [spring security oauth2使用redis存储token](https://segmentfault.com/a/1190000012353924)
+
+![](/blog_img/2018032304.jpg)
+一共有 9 个 key，可以通过以下命令查看:
+
+```
+127.0.0.1:6379> keys *
+ 1) "uname_to_access:server:pggsnap"
+ 2) "access:a89a6efc-9e49-4973-9227-926e2d8b40b3"
+ 3) "refresh_to_access:458c8993-305c-44f4-aace-b9d233110b22"
+ 4) "auth_to_access:2bed885bad976e388f1dd9a3012727c4"
+ 5) "access_to_refresh:a89a6efc-9e49-4973-9227-926e2d8b40b3"
+ 6) "client_id_to_access:server"
+ 7) "refresh_auth:458c8993-305c-44f4-aace-b9d233110b22"
+ 8) "auth:a89a6efc-9e49-4973-9227-926e2d8b40b3"
+ 9) "refresh:458c8993-305c-44f4-aace-b9d233110b22"
+ 127.0.0.1:6379> type "auth_to_access:2bed885bad976e388f1dd9a3012727c4"
+string
+127.0.0.1:6379> get "auth_to_access:2bed885bad976e388f1dd9a3012727c4"
+"\xac\xed\x00\x05sr\x00Corg.springframework.security.oauth2.common.DefaultOAuth2AccessToken\x0c\xb2\x9e6\x1b$\xfa\xce\x02\x00\x06L\x00\x15additionalInformationt\x00\x0fLjava/util/Map;L\x00\nexpirationt\x00\x10Ljava/util/Date;L\x00\x0crefreshTokent\x00?Lorg/springframework/security/oauth2/common/OAuth2RefreshToken;L\x00\x05scopet\x00\x0fLjava/util/Set;L\x00\ttokenTypet\x00\x12Ljava/lang/String;L\x00\x05valueq\x00~\x00\x05xpsr\x00\x1ejava.util.Collections$EmptyMapY6\x14\x85Z\xdc\xe7\xd0\x02\x00\x00xpsr\x00\x0ejava.util.Datehj\x81\x01KYt\x19\x03\x00\x00xpw\b\x00\x00\x01bev\xad\xc4xsr\x00Lorg.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken/\xdfGc\x9d\xd0\xc9\xb7\x02\x00\x01L\x00\nexpirationq\x00~\x00\x02xr\x00Dorg.springframework.security.oauth2.common.DefaultOAuth2RefreshTokens\xe1\x0e\ncT\xd4^\x02\x00\x01L\x00\x05valueq\x00~\x00\x05xpt\x00$458c8993-305c-44f4-aace-b9d233110b22sq\x00~\x00\tw\b\x00\x00\x01b\xfa\xcf\x19\xc3xsr\x00%java.util.Collections$UnmodifiableSet\x80\x1d\x92\xd1\x8f\x9b\x80U\x02\x00\x00xr\x00,java.util.Collections$UnmodifiableCollection\x19B\x00\x80\xcb^\xf7\x1e\x02\x00\x01L\x00\x01ct\x00\x16Ljava/util/Collection;xpsr\x00\x17java.util.LinkedHashSet\xd8l\xd7Z\x95\xdd*\x1e\x02\x00\x00xr\x00\x11java.util.HashSet\xbaD\x85\x95\x96\xb8\xb74\x03\x00\x00xpw\x0c\x00\x00\x00\x10?@\x00\x00\x00\x00\x00\x01t\x00\x01xxt\x00\x06bearert\x00$a89a6efc-9e49-4973-9227-926e2d8b40b3"
+```
+
+
+- access_token 以及 refresh_token 的刷新
+access_token 过期，refresh_token 未过期，调用刷新 token 接口，可以重新获取 access_token；如果都过期，需要通过账户密码验证重新获取 token。
+
+    - 获取 token
+
+    ```
+    pggsnap@mbp ~$curl -X POST -u "server:server" -d "grant_type=password&username=pggsnap&password=123456" "http://localhost:8080/ms-auth/oauth/token"
+    {"access_token":"8b3de5a9-8fe2-4742-9157-c9871bc23d0e","token_type":"bearer","refresh_token":"a9c02ab1-4c41-4aca-92f3-810f4686c998","expires_in":119,"scope":"x"}
+    ```
+
+    - 刷新 token
+
+    ```
+    pggsnap@mbp ~$curl -X POST -u "server:server" -d "grant_type=refresh_token&refresh_token=a9c02ab1-4c41-4aca-92f3-810f4686c998" "http://localhost:8080/ms-auth/oauth/token"
+    {"access_token":"58533360-54d4-4e5c-b5f4-d8d57590114f","token_type":"bearer","refresh_token":"a9c02ab1-4c41-4aca-92f3-810f4686c998","expires_in":119,"scope":"x"}
+    ```
+
 
 完整代码参考： [GitHub](https://github.com/pggsnap/oauth)
