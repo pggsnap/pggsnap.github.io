@@ -210,5 +210,27 @@ string
     {"access_token":"58533360-54d4-4e5c-b5f4-d8d57590114f","token_type":"bearer","refresh_token":"a9c02ab1-4c41-4aca-92f3-810f4686c998","expires_in":119,"scope":"x"}
     ```
 
+- 关闭 Spring Security 自带的 csrf 保护
+
+```
+@Override
+public void configure(HttpSecurity http) throws Exception {
+    /**
+    * 1. 关闭 csrf，原因：
+    *      - 提供的都是 restful 接口，并且通过外网调用必须在 header 中设置 token 信息，已经可以保证安全了，无需 csrf 防护；
+    *      - 默认的 CsrfFilter 不支持 post 等方法，这样访问 post 方法时，需要提供 _csrf 的 token，在已经安全的情况下，没有必要。
+    * 2. 可以设置部分接口无需认证，比如 /health，这样就可以通过 spring-boot-admin 来统一监控微服务。
+    */
+    http.csrf().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+            .and()
+            .authorizeRequests()    // "/health"接口无需认证，其余所有接口都需要认证
+                .antMatchers("/health").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .httpBasic();
+}
+```
 
 完整代码参考： [GitHub](https://github.com/pggsnap/oauth)
