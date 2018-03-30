@@ -17,84 +17,88 @@ tags:
 
 - rpm 安装
 
-```
-rpm -ivh elasticsearch-6.1.1.rpm
-```
+    ```
+    rpm -ivh elasticsearch-6.1.1.rpm
+    ```
 
 - 配置
-`/etc/elasticsearch/elasticsearch.yml` 修改部分参数:
 
-```
-network.host: 192.168.99.13
-http.port: 9200
-```
+    `/etc/elasticsearch/elasticsearch.yml` 修改部分参数:
+
+    ```
+    network.host: 192.168.99.13
+    http.port: 9200
+    ```
 
 - 启动
 
-```
-systemctl start elasticsearch
-```
+    ```
+    systemctl start elasticsearch
+    ```
 
 ### Kibana 安装配置
 [Kibana User Guide](https://www.elastic.co/guide/en/kibana/current/index.html)
 
 - rpm 安装
 
-```
-rpm -ivh kibana-6.1.1-x86_64.rpm
-```
+    ```
+    rpm -ivh kibana-6.1.1-x86_64.rpm
+    ```
 
 - 配置
-`/etc/kibana/kibana.yml` 修改部分参数:
+    `/etc/kibana/kibana.yml` 修改部分参数:
 
-```
-server.port: 5601
-server.host: "192.168.99.13"
-elasticsearch.url: "http://192.168.99.13:9200"
-```
+    ```
+    server.port: 5601
+    server.host: "192.168.99.13"
+    elasticsearch.url: "http://192.168.99.13:9200"
+    ```
 
 - 启动
 
-```
-systemctl start kibana
-```
+    ```
+    systemctl start kibana
+    ```
 
 ### Filebeat 安装配置
 [Getting Started With Filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-getting-started.html)
 
 - rpm 安装
-```
-rpm -ivh filebeat-6.1.1-x86_64.rpm
-```
+
+    ```
+    rpm -ivh filebeat-6.1.1-x86_64.rpm
+    ```
 
 - 配置
-`/etc/filebeat/filebeat.yml` 参考配置, 将日志 `/var/log/*.log` 以及 `/var/log/nginx/*.log` 直接发送到 Elasticsearch。
 
-```
-filebeat.prospectors:
-- type: log
-  enabled: true
-  paths:
-    - /var/log/*.log
-    - /var/log/nginx/*.log
+    `/etc/filebeat/filebeat.yml` 参考配置, 将日志 `/var/log/*.log` 以及 `/var/log/nginx/*.log` 直接发送到 Elasticsearch。
 
-output.elasticsearch:
-  hosts: ["192.168.99.13:9200"]
+    ```
+    filebeat.prospectors:
+    - type: log
+      enabled: true
+      paths:
+        - /var/log/*.log
+        - /var/log/nginx/*.log
 
-setup.kibana:
-  host: "192.168.99.13:5601"
-```
+    output.elasticsearch:
+      hosts: ["192.168.99.13:9200"]
+
+    setup.kibana:
+      host: "192.168.99.13:5601"
+    ```
 
 - 安装 Kibana dashboards
 
-```
-filebeat setup --dashboards
-```
+    ```
+    filebeat setup --dashboards
+    ```
 
 - 启动
-```
-systemctl start filebeat
-```
 
-### 测试
+    ```
+    systemctl start filebeat
+    ```
+
+### 测试  
 浏览器通过 http://192.168.99.13:5601 查看日志。
