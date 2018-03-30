@@ -105,7 +105,4 @@ tags:
 
 - grok
 
-    内置了很多规则，可以在以下目录中找到:
-    ```
-    /usr/share/logstash/vendor/bundle/jruby/2.3.0/gems/logstash-patterns-core-4.1.2/patterns
-    ```
+    内置了很多规则，可以在以下目录中找到: `/usr/share/logstash/vendor/bundle/jruby/2.3.0/gems/logstash-patterns-core-4.1.2/patterns`
