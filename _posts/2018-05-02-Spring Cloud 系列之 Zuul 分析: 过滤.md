@@ -223,7 +223,7 @@ public void preRoute() throws ZuulException {
 
 从以上代码可见，如果你需要给用户展示一个 401 错误，有两种方法：
 
-1、抛出 ZuulException(Throwable var1, 401, String errorCause) 异常；
+1、抛出 ZuulException(Throwable var1, 401, String errorCause) 异常。实际操作不可行，因为继承的 ZuulFilter 类的 run 方法不能抛出需要捕获的异常；可以通过 throw new ZuulRuntimeException(new ZuulException(Throwable var1, 401, String errorCause)) 实现。
 
 2、抛出其他异常，但是会被封装为 ZuulException(Throwable var1, 500, String errorCause) 异常；需要自定义 error filter 解析 var1，获取 var1 异常中的其他信息。
 
