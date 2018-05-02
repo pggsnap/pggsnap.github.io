@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Spring Cloud 系列之 Zuul 分析: 过滤器 ZuulServlet"
+title:      "Spring Cloud 系列之 Zuul 分析: 过滤"
 date:       2018-05-02
 author:     "pggsnap"
 tags:
@@ -57,7 +57,94 @@ public void service(ServletRequest servletRequest, ServletResponse servletRespon
 
 3、如果 postRoute 出现异常，则执行 error filter。
 
-# 二、自定义过滤器
+# 二、过滤器类型
+在 Spring Boot 中使用 @EnableZuulProxy 注解，会默认开启 endpoint 路由接口：/filters。设置 `management.security.enabled=false`，可以通过 `curl -X GET http://localhost:8080/filters` 获取路由信息：
+```
+{
+    "pre":[
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.pre.ServletDetectionFilter",
+            "order":-3,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.pre.Servlet30WrapperFilter",
+            "order":-2,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.pre.FormBodyWrapperFilter",
+            "order":-1,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.sleuth.instrument.zuul.TracePreZuulFilter",
+            "order":0,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.pre.DebugFilter",
+            "order":1,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.pre.PreDecorationFilter",
+            "order":5,
+            "disabled":false,
+            "static":true
+        }
+    ],
+    "route":[
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.route.RibbonRoutingFilter",
+            "order":10,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.route.SimpleHostRoutingFilter",
+            "order":100,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.route.SendForwardFilter",
+            "order":500,
+            "disabled":false,
+            "static":true
+        }
+    ],
+    "error":[
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.post.SendErrorFilter",
+            "order":0,
+            "disabled":false,
+            "static":true
+        }
+    ],
+    "post":[
+        {
+            "class":"org.springframework.cloud.sleuth.instrument.zuul.TracePostZuulFilter",
+            "order":0,
+            "disabled":false,
+            "static":true
+        },
+        {
+            "class":"org.springframework.cloud.netflix.zuul.filters.post.SendResponseFilter",
+            "order":1000,
+            "disabled":false,
+            "static":true
+        }
+    ]
+}
+```
+
+# 三、自定义过滤器
 
 假设我们需要自定义 error filter, 用来替换 SendErrorFilter 并自定义错误返回，应该如何处理呢？
 
