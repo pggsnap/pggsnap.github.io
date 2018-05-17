@@ -87,6 +87,7 @@ public class PreparedStatement extends StatementImpl implements java.sql.Prepare
 代码改进后如下：
 ```
 private static int INSERT_BATCH = 10000;
+
 @Transactional
 public long insertUUIDBatch(int num) {
     long start = System.currentTimeMillis();
