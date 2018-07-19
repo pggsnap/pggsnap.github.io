@@ -200,3 +200,10 @@ public class RateLimitProperties implements Validator {
     }
 }
 ```
+
+## 对性能的影响
+
+压力测试，如果不设置限流的情况下，TPS 为 2850；如果设置了限流，TPS 骤降到 600。
+
+通过 JProfiler 结合代码分析，发现 AbstractCacheRateLimiter 有一个同步方法 consume，导致了大量线程都处于阻塞状态。
+![](/blog_img/ratelimit-1.jpg)
