@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "common-pool2 笔记"
-date:       2018-08=-8
+date:       2018-08-8
 author:     "pggsnap"
 tags:
     - common-pool2
@@ -9,7 +9,7 @@ tags:
 
 # common-pool2 核心组件
 
-![img](../blog_img/546.png)
+![img](../blog_img/546.jpg)
 
 1. ```
    ObjectPool：实现对对象的存取和状态管理的池实现；如：线程池，数据库连接池等。
