@@ -9,7 +9,7 @@ tags:
 
 # common-pool2 核心组件
 
-![img](../blog_img/546.jpg)
+![img](/blog_img/546.jpg)
 
 1. ```
    ObjectPool：实现对对象的存取和状态管理的池实现；如：线程池，数据库连接池等。
