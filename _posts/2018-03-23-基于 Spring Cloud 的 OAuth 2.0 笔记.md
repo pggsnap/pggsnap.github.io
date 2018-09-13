@@ -173,7 +173,7 @@ public class HelloController {
 ![](/blog_img/2018032304.jpg)
 一共有 9 个 key，可以通过以下命令查看:
 
-```
+```shell
 127.0.0.1:6379> keys *
  1) "uname_to_access:server:pggsnap"
  2) "access:a89a6efc-9e49-4973-9227-926e2d8b40b3"
@@ -186,8 +186,225 @@ public class HelloController {
  9) "refresh:458c8993-305c-44f4-aace-b9d233110b22"
  127.0.0.1:6379> type "auth_to_access:2bed885bad976e388f1dd9a3012727c4"
 string
-127.0.0.1:6379> get "auth_to_access:2bed885bad976e388f1dd9a3012727c4"
-"\xac\xed\x00\x05sr\x00Corg.springframework.security.oauth2.common.DefaultOAuth2AccessToken\x0c\xb2\x9e6\x1b$\xfa\xce\x02\x00\x06L\x00\x15additionalInformationt\x00\x0fLjava/util/Map;L\x00\nexpirationt\x00\x10Ljava/util/Date;L\x00\x0crefreshTokent\x00?Lorg/springframework/security/oauth2/common/OAuth2RefreshToken;L\x00\x05scopet\x00\x0fLjava/util/Set;L\x00\ttokenTypet\x00\x12Ljava/lang/String;L\x00\x05valueq\x00~\x00\x05xpsr\x00\x1ejava.util.Collections$EmptyMapY6\x14\x85Z\xdc\xe7\xd0\x02\x00\x00xpsr\x00\x0ejava.util.Datehj\x81\x01KYt\x19\x03\x00\x00xpw\b\x00\x00\x01bev\xad\xc4xsr\x00Lorg.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken/\xdfGc\x9d\xd0\xc9\xb7\x02\x00\x01L\x00\nexpirationq\x00~\x00\x02xr\x00Dorg.springframework.security.oauth2.common.DefaultOAuth2RefreshTokens\xe1\x0e\ncT\xd4^\x02\x00\x01L\x00\x05valueq\x00~\x00\x05xpt\x00$458c8993-305c-44f4-aace-b9d233110b22sq\x00~\x00\tw\b\x00\x00\x01b\xfa\xcf\x19\xc3xsr\x00%java.util.Collections$UnmodifiableSet\x80\x1d\x92\xd1\x8f\x9b\x80U\x02\x00\x00xr\x00,java.util.Collections$UnmodifiableCollection\x19B\x00\x80\xcb^\xf7\x1e\x02\x00\x01L\x00\x01ct\x00\x16Ljava/util/Collection;xpsr\x00\x17java.util.LinkedHashSet\xd8l\xd7Z\x95\xdd*\x1e\x02\x00\x00xr\x00\x11java.util.HashSet\xbaD\x85\x95\x96\xb8\xb74\x03\x00\x00xpw\x0c\x00\x00\x00\x10?@\x00\x00\x00\x00\x00\x01t\x00\x01xxt\x00\x06bearert\x00$a89a6efc-9e49-4973-9227-926e2d8b40b3"
+```
+
+默认的序列化方式为 JdkSerializationStrategy，通过反序列化查看下这些 key 分别对应哪些信息：
+
+```json
+client_id_to_access:server -> [
+    {
+        "access_token": "b6fdbf99-4259-43bb-bbe7-f3c2a0168a87",
+        "token_type": "bearer",
+        "refresh_token": "eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded",
+        "expires_in": 31356,
+        "scope": "xx"
+    }
+]
+
+auth:b6fdbf99-4259-43bb-bbe7-f3c2a0168a87 -> {
+    "authorities": [
+        {
+            "authority": "dw-service:jres-test"
+        },
+        {
+            "authority": "ms-test2:test"
+        }
+    ],
+    "details": null,
+    "authenticated": true,
+    "userAuthentication": {
+        "authorities": [
+            {
+                "authority": "dw-service:jres-test"
+            },
+            {
+                "authority": "ms-test2:test"
+            }
+        ],
+        "details": {
+            "grant_type": "password",
+            "username": "test2.0"
+        },
+        "authenticated": true,
+        "principal": {
+            "password": null,
+            "username": "test2.0",
+            "authorities": [
+                {
+                    "authority": "dw-service:jres-test"
+                },
+                {
+                    "authority": "ms-test2:test"
+                }
+            ],
+            "accountNonExpired": true,
+            "accountNonLocked": true,
+            "credentialsNonExpired": true,
+            "enabled": true
+        },
+        "credentials": null,
+        "name": "test2.0"
+    },
+    "principal": {
+        "password": null,
+        "username": "test2.0",
+        "authorities": [
+            {
+                "authority": "dw-service:jres-test"
+            },
+            {
+                "authority": "ms-test2:test"
+            }
+        ],
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "credentialsNonExpired": true,
+        "enabled": true
+    },
+    "credentials": "",
+    "clientOnly": false,
+    "oauth2Request": {
+        "clientId": "server",
+        "scope": [
+            "xx"
+        ],
+        "requestParameters": {
+            "grant_type": "password",
+            "username": "test2.0"
+        },
+        "resourceIds": [],
+        "authorities": [],
+        "approved": true,
+        "refresh": false,
+        "redirectUri": null,
+        "responseTypes": [],
+        "extensions": {},
+        "refreshTokenRequest": null,
+        "grantType": "password"
+    },
+    "name": "test2.0"
+}
+
+auth_to_access:897193de5c8f9f2c0ed5b3b60e7eb9e7 -> {
+    "access_token": "b6fdbf99-4259-43bb-bbe7-f3c2a0168a87",
+    "token_type": "bearer",
+    "refresh_token": "eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded",
+    "expires_in": 31318,
+    "scope": "xx"
+}
+
+uname_to_access:server:test2.0 -> [
+    {
+        "access_token": "b6fdbf99-4259-43bb-bbe7-f3c2a0168a87",
+        "token_type": "bearer",
+        "refresh_token": "eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded",
+        "expires_in": 31292,
+        "scope": "xx"
+    }
+]
+
+refresh:eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded -> {
+    "value": "eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded",
+    "expiration": "2018-10-12T01:59:10.967+0000"
+}
+
+refresh_auth:eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded -> {
+    "authorities": [
+        {
+            "authority": "dw-service:jres-test"
+        },
+        {
+            "authority": "ms-test2:test"
+        }
+    ],
+    "details": null,
+    "authenticated": true,
+    "userAuthentication": {
+        "authorities": [
+            {
+                "authority": "dw-service:jres-test"
+            },
+            {
+                "authority": "ms-test2:test"
+            }
+        ],
+        "details": {
+            "grant_type": "password",
+            "username": "test2.0"
+        },
+        "authenticated": true,
+        "principal": {
+            "password": null,
+            "username": "test2.0",
+            "authorities": [
+                {
+                    "authority": "dw-service:jres-test"
+                },
+                {
+                    "authority": "ms-test2:test"
+                }
+            ],
+            "accountNonExpired": true,
+            "accountNonLocked": true,
+            "credentialsNonExpired": true,
+            "enabled": true
+        },
+        "credentials": null,
+        "name": "test2.0"
+    },
+    "principal": {
+        "password": null,
+        "username": "test2.0",
+        "authorities": [
+            {
+                "authority": "dw-service:jres-test"
+            },
+            {
+                "authority": "ms-test2:test"
+            }
+        ],
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "credentialsNonExpired": true,
+        "enabled": true
+    },
+    "credentials": "",
+    "clientOnly": false,
+    "oauth2Request": {
+        "clientId": "server",
+        "scope": [
+            "xx"
+        ],
+        "requestParameters": {
+            "grant_type": "password",
+            "username": "test2.0"
+        },
+        "resourceIds": [],
+        "authorities": [],
+        "approved": true,
+        "refresh": false,
+        "redirectUri": null,
+        "responseTypes": [],
+        "extensions": {},
+        "refreshTokenRequest": null,
+        "grantType": "password"
+    },
+    "name": "test2.0"
+}
+
+refresh_to_access:eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded ->
+	b6fdbf99-4259-43bb-bbe7-f3c2a0168a87
+
+access:b6fdbf99-4259-43bb-bbe7-f3c2a0168a87 -> {
+    "access_token": "b6fdbf99-4259-43bb-bbe7-f3c2a0168a87",
+    "token_type": "bearer",
+    "refresh_token": "eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded",
+    "expires_in": 31169,
+    "scope": "xx"
+}
+
+access_to_refresh:b6fdbf99-4259-43bb-bbe7-f3c2a0168a87 ->
+	eda15dc0-5b4a-4bc3-92c8-ffeeb63f7ded
 ```
 
 
