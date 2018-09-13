@@ -190,7 +190,7 @@ string
 
 默认的序列化方式为 JdkSerializationStrategy，通过反序列化查看下这些 key 分别对应哪些信息：
 
-```json
+```shell
 client_id_to_access:server -> [
     {
         "access_token": "b6fdbf99-4259-43bb-bbe7-f3c2a0168a87",
