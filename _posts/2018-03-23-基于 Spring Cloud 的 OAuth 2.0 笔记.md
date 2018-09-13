@@ -24,7 +24,7 @@ tags:
 
 ### 认证服务器
 
-```
+```java
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -64,7 +64,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 ### 资源服务器
 
-```
+```java
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
@@ -84,7 +84,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 ### Spring Security
 
-```
+```java
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -111,7 +111,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 常见的做法是在需要认证的接口上，设置相关注解，比如：
 
-```
+```java
 @PreAuthorize("hasAuthority('hello')")  // 访问该接口需要拥有 hello 的权限
 @RequestMapping(value = "/hello", method = RequestMethod.GET)
 public String hello(String name) {
@@ -150,7 +150,7 @@ ms-auth 统一维护 MySQL 以及 Redis，可以在服务启动时将表 privile
 
 - 创建一个微服务 ms-server 用于测试，提供了 hello 接口，该接口需要认证（在数据库中配置）。
 
-```
+```java
 @RestController
 public class HelloController {
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
@@ -415,21 +415,21 @@ access_to_refresh:b6fdbf99-4259-43bb-bbe7-f3c2a0168a87 ->
 
     - 获取 token
 
-    ```
+    ```shell
     pggsnap@mbp ~$curl -X POST -u "server:server" -d "grant_type=password&username=pggsnap&password=123456" "http://localhost:8080/ms-auth/oauth/token"
     {"access_token":"8b3de5a9-8fe2-4742-9157-c9871bc23d0e","token_type":"bearer","refresh_token":"a9c02ab1-4c41-4aca-92f3-810f4686c998","expires_in":119,"scope":"x"}
     ```
 
     - 刷新 token
 
-    ```
+    ```shell
     pggsnap@mbp ~$curl -X POST -u "server:server" -d "grant_type=refresh_token&refresh_token=a9c02ab1-4c41-4aca-92f3-810f4686c998" "http://localhost:8080/ms-auth/oauth/token"
     {"access_token":"58533360-54d4-4e5c-b5f4-d8d57590114f","token_type":"bearer","refresh_token":"a9c02ab1-4c41-4aca-92f3-810f4686c998","expires_in":119,"scope":"x"}
     ```
 
 - 关闭 Spring Security 自带的 csrf 保护
 
-```
+```java
 @Override
 public void configure(HttpSecurity http) throws Exception {
     /**
